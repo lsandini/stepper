@@ -35,6 +35,7 @@
     "plugins": [
       "expo-router",
       "expo-health-connect",
+      "react-native-health-connect",
       [
         "expo-build-properties",
         {
@@ -44,8 +45,7 @@
             "minSdkVersion": 26
           }
         }
-      ],
-      "react-native-health-connect"
+      ]
     ],
     "experiments": {
       "typedRoutes": true

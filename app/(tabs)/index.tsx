@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect, useState } from 'react';
 import { Button, StyleSheet, View } from "react-native";
 import {
   aggregateRecord,
@@ -28,10 +29,26 @@ const getTodayDate = (): Date => {
 };
 
 export default function App() {
-  const initializeHealthConnect = async () => {
-    const result = await initialize();
-    console.log({ result });
-  };
+  // const initializeHealthConnect = async () => {
+  //   const result = await initialize();
+  //   console.log({ result });
+  // };
+
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  useEffect(() => {
+    const initializeHealthConnect = async () => {
+      try {
+        await initialize();
+        setIsInitialized(true);
+        console.log('Health Connect initialized successfully');
+      } catch (error) {
+        console.error('Failed to initialize Health Connect:', error);
+      }
+    };
+
+    initializeHealthConnect();
+  }, []);
 
   const checkAvailability = async () => {
     const status = await getSdkStatus();
@@ -121,10 +138,28 @@ export default function App() {
     });
   };
 
-  const grantedPermissions = () => {
-    getGrantedPermissions().then((permissions) => {
+  // const grantedPermissions = () => {
+  //   getGrantedPermissions().then((permissions) => {
+  //     console.log("Granted permissions ", { permissions });
+  //   });
+  // };
+
+  const grantedPermissions = async () => {
+    try {
+      if (!isInitialized) {
+        console.warn('Health Connect is not initialized yet');
+        return;
+      }
+      const permissions = await getGrantedPermissions();
       console.log("Granted permissions ", { permissions });
-    });
+    } catch (error) {
+      console.error("Error getting granted permissions:", error);
+      if (error instanceof Error) {
+        console.error("Error name:", error.name);
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
+      }
+    }
   };
 
   return (
